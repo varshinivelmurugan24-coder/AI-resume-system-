@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Screener</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-brain"></i>
+                <h2>TalentAI</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" id="nav-dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" id="nav-jobs">
+                    <i class="fa-solid fa-briefcase"></i> Jobs & Roles
+                </a>
+                <a href="#" class="nav-item" id="nav-upload">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Search candidates or jobs...">
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">HR</div>
+                    <span>Welcome, Recruiter</span>
+                </div>
+            </header>
+
+            <div class="content-area" id="view-dashboard">
+                <div class="header-action">
+                    <div>
+                        <h1 class="page-title">Candidate Dashboard</h1>
+                        <p class="subtitle">AI-ranked candidates based on Job Descriptions</p>
+                    </div>
+                    <div class="job-selector">
+                        <label for="dashboard-job-select">Select Job Details:</label>
+                        <select id="dashboard-job-select" class="glass-select">
+                            <option value="">-- Loading Jobs --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="metric-cards">
+                    <div class="card metric-card">
+                        <div class="icon-wrapper blue">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="metric-info">
+                            <h3>Total Screened</h3>
+                            <p id="total-screened">0</p>
+                        </div>
+                    </div>
+                    <div class="card metric-card">
+                        <div class="icon-wrapper green">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="metric-info">
+                            <h3>Top Matches (>80%)</h3>
+                            <p id="top-matches">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card candidates-table-card">
+                    <h2>Ranked Candidates</h2>
+                    <div class="table-responsive">
+                        <table class="styled-table" id="candidates-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Candidate Name</th>
+                                    <th>Email</th>
+                                    <th>Match Score</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Candidates populated via JS -->
+                            </tbody>
+                        </table>
+                        <div id="no-candidates-msg" class="empty-state">
+                            <i class="fa-solid fa-folder-open"></i>
+                            <p>No candidates found for this job. Upload some resumes!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="content-area hidden" id="view-upload">
+                <h1 class="page-title">Upload & Screen Candidate</h1>
+                <p class="subtitle">Upload a PDF resume. Our AI will extract text and compute a match score against the selected job.</p>
+
+                <div class="card upload-card">
+                    <form id="upload-form">
+                        <div class="form-group">
+                            <label for="upload-job-select">Select Job Role</label>
+                            <select id="upload-job-select" required class="glass-select">
+                                <option value="">-- Loading Jobs --</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="candidate-name">Candidate Full Name</label>
+                                <input type="text" id="candidate-name" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group half">
+                                <label for="candidate-email">Candidate Email</label>
+                                <input type="email" id="candidate-email" required placeholder="johndoe@example.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Resume File (PDF)</label>
+                            <div class="drop-zone" id="drop-zone">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <p>Drag & Drop your PDF here or <span class="browse-link">Browse</span></p>
+                                <input type="file" id="resume-file" accept=".pdf" required hidden>
+                                <p class="file-info" id="file-info"></p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block" id="upload-btn">
+                            <i class="fa-solid fa-microchip"></i> Analyze Match
+                        </button>
+                    </form>
+                    <div id="upload-status" class="status-message hidden">
+                        <div class="spinner"></div>
+                        <p>AI is analyzing the resume...</p>
+                    </div>
+                    <div id="upload-result" class="result-message hidden">
+                        <!-- Score goes here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Section (Hidden by default, used to create new Job descriptions) -->
+            <div class="content-area hidden" id="view-jobs">
+                 <h1 class="page-title">Manage Job Descriptions</h1>
+                 <p class="subtitle">Create baseline job requirements for the AI to analyze against.</p>
+
+                 <div class="card form-card">
+                    <h2>Add New Job Requirement</h2>
+                    <form id="job-form">
+                        <div class="form-group">
+                            <label for="job-title">Job Title</label>
+                            <input type="text" id="job-title" required placeholder="e.g. Senior Frontend Engineer">
+                        </div>
+                        <div class="form-group">
+                            <label for="job-description">Job Description & Required Skills</label>
+                            <textarea id="job-description" rows="5" required placeholder="Paste the job description or required skills here..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Job</button>
+                    </form>
+                 </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
